@@ -1,0 +1,12 @@
+# OS & IDEs
+.venv
+.vscode
+.fleet
+
+# Meta info
+*.egg-info
+
+# Caches
+__pycache__
+.mypy_cache
+.pytest_cache
