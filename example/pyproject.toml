@@ -3,15 +3,13 @@
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
 [project]
-name = "pylocked"
-description = "pyLocked provides utility classes to `[R]Lock` resources."
+name = "pylocked-example"
 version = "0.0.0-dev"
 authors = [{ name = "Eyal Halpern Shalev", email = "eyalsh@gmail.com" }]
-requires-python = ">=3.10"
+dependencies = [
+  'pylocked'
+]
 
-[project.optional-dependencies]
-dev = ['mypy~=0.990', 'pylocked[test]']
-test = ['pytest~=7.2.0', 'pytest-asyncio~=0.20.1', 'flake8~=5.0.4']
 
 [tool.mypy]
 check_untyped_defs = true

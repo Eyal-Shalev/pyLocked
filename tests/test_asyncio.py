@@ -1,23 +1,32 @@
 from __future__ import annotations
+from functools import partial
+import os
 
 import pytest
 
-from typing import Any, Type
+from typing import Any, Iterator, Type
 
-from asyncio import create_task, gather, Event, wait_for
+from asyncio import Lock, Semaphore, create_task, gather, Event, wait_for
 
 from pylocked.asyncio import Locked, Semaphored
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("size", [100])
-@pytest.mark.parametrize("lock_cls", [Locked, Semaphored])
-async def test_with_lock(size: int, lock_cls: Type[Locked | Semaphored]):
+@pytest.mark.parametrize("lock_cls", [
+    Locked,
+    Semaphored,
+    partial(Locked, lock=Lock()),
+    partial(Semaphored, semaphore=Semaphore(1)),
+])
+async def test_with_lock(size: int, lock_cls: Type[Locked | Semaphored]) -> None:
     locked_counter = lock_cls({"deref": 0})
 
     async def inc() -> None:
         async with locked_counter as counter:
-            counter["deref"] += 1
+            tmp = counter["deref"] + 1
+            os.sched_yield()
+            counter["deref"] = tmp
 
     await gather(*[create_task(inc()) for _ in range(size)])
     assert locked_counter._val["deref"] == size
@@ -25,7 +34,12 @@ async def test_with_lock(size: int, lock_cls: Type[Locked | Semaphored]):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("size", [100])
-@pytest.mark.parametrize("lock_cls", [Locked, Semaphored])
+@pytest.mark.parametrize("lock_cls", [
+    Locked,
+    Semaphored,
+    partial(Locked, lock=Lock()),
+    partial(Semaphored, semaphore=Semaphore(1)),
+])
 async def test_update(size: int, lock_cls: Type[Locked | Semaphored]) -> None:
     locked_counter = lock_cls(0)
 
@@ -41,7 +55,12 @@ async def test_update(size: int, lock_cls: Type[Locked | Semaphored]) -> None:
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("size", [100])
-@pytest.mark.parametrize("lock_cls", [Locked, Semaphored])
+@pytest.mark.parametrize("lock_cls", [
+    Locked,
+    Semaphored,
+    partial(Locked, lock=Lock()),
+    partial(Semaphored, semaphore=Semaphore(1)),
+])
 async def test_replace(size: int, lock_cls: Type[Locked | Semaphored]) -> None:
     locked_counter = lock_cls(0)
     await locked_counter.__aenter__()
