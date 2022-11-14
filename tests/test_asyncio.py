@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 from functools import partial
 import os
 
 import pytest
 
-from typing import Any, Iterator, Type
+from typing import Any, Type
 
 from asyncio import Lock, Semaphore, create_task, gather, Event, wait_for
 

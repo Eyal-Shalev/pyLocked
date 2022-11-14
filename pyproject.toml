@@ -10,10 +10,8 @@ authors = [{ name = "Eyal Halpern Shalev", email = "eyalsh@gmail.com" }]
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
-asyncio = ['pylocked-asyncio']
-threading = ['pylocked-threading']
-dev = ['mypy~=0.990', 'pylocked[test]']
-test = ['pytest~=7.2.0', 'pytest-asyncio~=0.20.1', 'flake8~=5.0.4']
+dev = ['mypy~=0.990', 'ipython~=8.6', 'pylocked[test]']
+test = ['pytest~=7.2', 'pytest-asyncio~=0.20', 'black~=22.10']
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

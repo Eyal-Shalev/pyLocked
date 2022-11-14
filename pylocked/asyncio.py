@@ -3,8 +3,15 @@ from __future__ import annotations
 from asyncio import Lock, Semaphore
 from contextlib import AbstractAsyncContextManager
 from types import TracebackType
-from typing import (AsyncContextManager, Awaitable, Callable, Optional, ParamSpec, Type,
-                    TypeVar)
+from typing import (
+    AsyncContextManager,
+    Awaitable,
+    Callable,
+    Optional,
+    ParamSpec,
+    Type,
+    TypeVar,
+)
 
 _V = TypeVar("_V")
 
@@ -51,7 +58,9 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
 
-async def locked(f: Callable[_P, _R], *, lock: Optional[Lock] = None) -> Callable[_P, Awaitable[_R]]:
+async def locked(
+    f: Callable[_P, _R], *, lock: Optional[Lock] = None
+) -> Callable[_P, Awaitable[_R]]:
     locked_f = Locked(f, lock=lock)
 
     async def inner(*args: _P.args, **kwargs: _P.kwargs) -> _R:
@@ -62,7 +71,9 @@ async def locked(f: Callable[_P, _R], *, lock: Optional[Lock] = None) -> Callabl
     return inner
 
 
-async def semaphored(f: Callable[_P, _R], *, semaphore: Optional[Semaphore] = None) -> Callable[_P, Awaitable[_R]]:
+async def semaphored(
+    f: Callable[_P, _R], *, semaphore: Optional[Semaphore] = None
+) -> Callable[_P, Awaitable[_R]]:
     locked_f = Semaphored(f, semaphore=semaphore)
 
     async def inner(*args: _P.args, **kwargs: _P.kwargs) -> _R:
@@ -71,3 +82,12 @@ async def semaphored(f: Callable[_P, _R], *, semaphore: Optional[Semaphore] = No
         return res
 
     return inner
+
+
+__all__ = [
+    AbstractAsyncLocked.__name__,
+    Locked.__name__,
+    Semaphored.__name__,
+    locked.__name__,
+    semaphored.__name__,
+]

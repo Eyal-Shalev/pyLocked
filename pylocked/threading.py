@@ -72,3 +72,12 @@ def rlocked(f: Callable[_P, _R], *, lock: Optional[RLock] = None) -> Callable[_P
         return res
 
     return inner
+
+
+__all__ = [
+    AbstractLocked.__name__,
+    Locked.__name__,
+    RLocked.__name__,
+    locked.__name__,
+    rlocked.__name__,
+]
