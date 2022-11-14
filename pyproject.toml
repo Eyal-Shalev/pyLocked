@@ -10,10 +10,25 @@ authors = [{ name = "Eyal Halpern Shalev", email = "eyalsh@gmail.com" }]
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
+asyncio = ['pylocked-asyncio']
+threading = ['pylocked-threading']
 dev = ['mypy~=0.990', 'pylocked[test]']
 test = ['pytest~=7.2.0', 'pytest-asyncio~=0.20.1', 'flake8~=5.0.4']
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+filterwarnings = [
+    "error",
+]
+testpaths=[
+    "tests",
+]
+
 [tool.mypy]
+files = [
+    "pylocked",
+    "tests",
+]
 check_untyped_defs = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
@@ -23,3 +38,8 @@ warn_return_any = true
 warn_unused_ignores = true
 no_implicit_optional = true
 show_error_codes = true
+
+[source]
+root_patterns =[
+    '/pylocked-threading'
+]
