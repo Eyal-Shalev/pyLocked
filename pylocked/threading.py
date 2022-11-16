@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from abc import abstractmethod
 from contextlib import AbstractContextManager
 from threading import Lock, RLock
-from typing import ContextManager, ParamSpec, TypeVar, Callable, Optional, Type
 from types import TracebackType
-from abc import abstractmethod
+from typing import Callable, ContextManager, Optional, ParamSpec, Type, TypeVar
 
 _V = TypeVar("_V")
 

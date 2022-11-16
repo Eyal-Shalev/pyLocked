@@ -1,17 +1,21 @@
 [build-system]
-# Minimum requirements for the build system to execute.
-requires = ["setuptools", "wheel"]  # PEP 508 specifications.
+requires = ["setuptools", "wheel"]
 
 [project]
 name = "pylocked"
 description = "pyLocked provides utility classes to `[R]Lock` resources."
-version = "0.0.0-dev"
+dynamic = ['version']
 authors = [{ name = "Eyal Halpern Shalev", email = "eyalsh@gmail.com" }]
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
-dev = ['mypy~=0.990', 'ipython~=8.6', 'pylocked[test]']
-test = ['pytest~=7.2', 'pytest-asyncio~=0.20', 'black~=22.10']
+build = ['build~=0.9', 'twine~=4.0', 'semver~=2.13']
+test = ['pytest~=7.2', 'pytest-asyncio~=0.20', 'black~=22.10', 'mypy~=0.990', 'isort~=5.10']
+dev = ['pylocked[test]', 'pylocked[build]', 'ipython~=8.6']
+
+[tool.setuptools.dynamic]
+version = {attr = "pylocked.__version__"}
+readme = {file = ["README.md"]}
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -37,7 +41,6 @@ warn_unused_ignores = true
 no_implicit_optional = true
 show_error_codes = true
 
-[source]
-root_patterns =[
-    '/pylocked-threading'
-]
+[tool.isort]
+profile = "black"
+src_paths=['pylocked', 'test']
