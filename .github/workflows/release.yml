@@ -1,10 +1,16 @@
-name: Workflow
+name: Release
 
 env:
   TWINE_USERNAME: "__token__"
   TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
 on:
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        type: string
+        description: Valid SemVer version string
+        required: true
   push:
     tags:
       - v*
@@ -16,15 +22,15 @@ jobs:
   version:
     runs-on: ubuntu-latest
     steps:
-      - name: Version
-        id: version
-        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\/v/}
+      - name: Version from tag
+        if: ${{ inputs.VERSION == '' }}
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Version from input
+        if: ${{ inputs.VERSION != '' }}
+        run: echo "VERSION=${inputs.VERSION}" >> $GITHUB_ENV
       - name: Is pre-release
         id: is_pre
-        run: echo ::set-output name=IS_PRE::"$([[ ${{steps.version.outputs.version}} =~ .+-.+ ]] && echo 0 || echo 1)"
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-      is_pre: ${{ steps.is_pre.outputs.IS_PRE }}
+        run: echo "IS_PRE=$([[ ${{env.VERSION}} =~ .+-.+ ]] && echo 0 || echo 1)" >> $GITHUB_ENV
 
   build:
     runs-on: ubuntu-latest
@@ -41,10 +47,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install .[build]
       - name: Update version
-        run: ./scripts/gen_version.py ${{ needs.version.outputs.version }}
+        run: ./scripts/gen_version.py ${{ env.VERSION }}
       - name: Build
         run: python -m build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist
