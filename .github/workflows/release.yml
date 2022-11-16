@@ -27,7 +27,7 @@ jobs:
         run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
       - name: Version from input
         if: ${{ inputs.VERSION != '' }}
-        run: echo "VERSION=${inputs.VERSION}" >> $GITHUB_ENV
+        run: echo "VERSION=${{ inputs.VERSION }}" >> $GITHUB_ENV
       - name: Is pre-release
         id: is_pre
         run: echo "IS_PRE=$([[ ${{env.VERSION}} =~ .+-.+ ]] && echo 0 || echo 1)" >> $GITHUB_ENV
