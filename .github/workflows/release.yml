@@ -68,7 +68,4 @@ jobs:
           title: Version ${{ needs.version.outputs.version }}
           automatic_release_tag: ${{ needs.version.outputs.version }}
           prerelease: false
-          files: |
-            LICENSE
-            README.md
-            dist/*
+          files: dist/*
