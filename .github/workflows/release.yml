@@ -53,12 +53,20 @@ jobs:
         with:
           name: dist
           path: dist
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
       - uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           title: Version ${{ needs.version.outputs.version }}
           prerelease: false
-          automatic_release_tag: v${{ needs.version.outputs.version }}
           files: |
             LICENSE
             README.md
