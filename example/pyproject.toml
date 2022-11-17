@@ -1,0 +1,5 @@
+[project]
+name = "pylocked-example"
+version = "0.0.0-dev"
+authors = [{ name = "Eyal Halpern Shalev", email = "eyalsh@gmail.com" }]
+dependencies = ['pylocked']

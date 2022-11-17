@@ -1,9 +1,5 @@
 name: Test
 
-# env:
-#   TWINE_USERNAME: "__token__"
-#   TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-
 on:
   workflow_dispatch: {}
   pull_request:

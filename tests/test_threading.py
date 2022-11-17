@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import os
-import random
 import threading
-import time
 from concurrent.futures import FIRST_EXCEPTION, ThreadPoolExecutor, wait
 from functools import partial
 from threading import Lock, RLock
-from typing import Any, Callable, Type
+from typing import Callable, Type
+from tests.utils.ref import Ref
 
 import pytest
 
@@ -16,7 +15,9 @@ from pylocked.threading import Locked, RLocked, locked, rlocked
 
 @pytest.mark.parametrize("size", [100])
 @pytest.mark.parametrize("lock_dec", [locked, rlocked])
-def test_decorator(size: int, lock_dec: Callable) -> None:
+def test_decorator(
+    size: int, lock_dec: Callable[[Callable[[], None]], Callable[[], None]]
+) -> None:
     counter = 0
 
     @lock_dec
@@ -45,20 +46,22 @@ def test_decorator(size: int, lock_dec: Callable) -> None:
         partial(RLocked, lock=RLock()),
     ],
 )
-def test_with_lock(size: int, lock_cls: Type[Locked | RLocked]) -> None:
-    locked_counter = lock_cls({"deref": 0})
+def test_with_lock(
+    size: int, lock_cls: Type[Locked[Ref[int]] | RLocked[Ref[int]]]
+) -> None:
+    locked_counter = lock_cls(Ref(0))
     pool = ThreadPoolExecutor()
 
     def inc() -> None:
         with locked_counter as counter:
-            tmp = counter["deref"] + 1
+            tmp = counter.val + 1
             os.sched_yield()
-            counter["deref"] = tmp
+            counter.val = tmp
 
     wait(
         [pool.submit(inc) for _ in range(size)], timeout=1, return_when=FIRST_EXCEPTION
     )
-    assert locked_counter._val["deref"] == size
+    assert locked_counter._val.val == size
     pool.shutdown(wait=False, cancel_futures=True)
 
 
@@ -72,7 +75,7 @@ def test_with_lock(size: int, lock_cls: Type[Locked | RLocked]) -> None:
         partial(RLocked, lock=RLock()),
     ],
 )
-def test_update(size: int, lock_cls: Type[Locked | RLocked]) -> None:
+def test_update(size: int, lock_cls: Type[Locked[int] | RLocked[int]]) -> None:
     locked_counter = lock_cls(0)
     pool = ThreadPoolExecutor()
 
@@ -95,7 +98,7 @@ def test_update(size: int, lock_cls: Type[Locked | RLocked]) -> None:
         partial(RLocked, lock=RLock()),
     ],
 )
-def test_replace(lock_cls: Type[Locked | RLocked]) -> None:
+def test_replace(lock_cls: Type[Locked[int] | RLocked[int]]) -> None:
     locked_counter = lock_cls(0)
     ev = threading.Event()
 

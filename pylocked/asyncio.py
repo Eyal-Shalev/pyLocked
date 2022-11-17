@@ -4,9 +4,11 @@ from asyncio import Lock, Semaphore
 from contextlib import AbstractAsyncContextManager
 from types import TracebackType
 from typing import (
+    Any,
     AsyncContextManager,
     Awaitable,
     Callable,
+    Generic,
     Optional,
     ParamSpec,
     Type,
@@ -14,10 +16,11 @@ from typing import (
 )
 
 _V = TypeVar("_V")
+_L = TypeVar("_L", bound=AsyncContextManager[Any])
 
 
-class AbstractAsyncLocked(AbstractAsyncContextManager[_V]):
-    def __init__(self, val: _V, *, lock: AsyncContextManager[None]) -> None:
+class AbstractAsyncLocked(AbstractAsyncContextManager[_V], Generic[_V, _L]):
+    def __init__(self, val: _V, *, lock: _L) -> None:
         self._val = val
         self._lock = lock
 
@@ -44,12 +47,12 @@ class AbstractAsyncLocked(AbstractAsyncContextManager[_V]):
         await self._lock.__aexit__(exc_type, exc_val, exc_tb)
 
 
-class Locked(AbstractAsyncLocked[_V]):
+class Locked(AbstractAsyncLocked[_V, Lock]):
     def __init__(self, val: _V, *, lock: Optional[Lock] = None):
         super().__init__(val, lock=lock if lock else Lock())
 
 
-class Semaphored(AbstractAsyncLocked[_V]):
+class Semaphored(AbstractAsyncLocked[_V, Semaphore]):
     def __init__(self, val: _V, *, semaphore: Optional[Semaphore] = None):
         super().__init__(val, lock=semaphore if semaphore else Semaphore())
 
