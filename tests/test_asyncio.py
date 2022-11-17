@@ -6,9 +6,9 @@ from functools import partial
 from typing import Any, Type
 
 import pytest
+from tests.utils.ref import Ref
 
 from pylocked.asyncio import Locked, Semaphored
-from tests.utils.ref import Ref
 
 
 @pytest.mark.asyncio

@@ -1,8 +1,7 @@
 from __future__ import annotations
-from asyncio import sleep
 
 import random
-
+from asyncio import sleep
 from typing import Optional
 
 from pylocked.asyncio import locked

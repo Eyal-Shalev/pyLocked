@@ -1,6 +1,5 @@
 from typing import Generic, TypeVar
 
-
 _V = TypeVar("_V")
 
 

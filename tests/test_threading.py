@@ -6,9 +6,9 @@ from concurrent.futures import FIRST_EXCEPTION, ThreadPoolExecutor, wait
 from functools import partial
 from threading import Lock, RLock
 from typing import Callable, Type
-from tests.utils.ref import Ref
 
 import pytest
+from tests.utils.ref import Ref
 
 from pylocked.threading import Locked, RLocked, locked, rlocked
 
