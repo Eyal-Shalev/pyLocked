@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from asyncio import Lock, Semaphore
+from asyncio import Lock, Semaphore, iscoroutinefunction
 from contextlib import AbstractAsyncContextManager
 from types import TracebackType
 from typing import (
@@ -29,9 +29,13 @@ class AbstractAsyncLocked(AbstractAsyncContextManager[_V], Generic[_V, _L]):
             last, self._val = self._val, val
         return last
 
-    async def update(self, fn: Callable[[_V], Awaitable[_V]]) -> _V:
+    async def update(self, fn: Callable[[_V], _V | Awaitable[_V]]) -> _V:
         async with self._lock:
-            last, self._val = self._val, await fn(self._val)
+            if iscoroutinefunction(fn):
+                ref = await fn(self._val)
+            else:
+                ref = fn(self._val)
+            last, self._val = self._val, ref
         return last
 
     async def __aenter__(self) -> _V:
@@ -52,11 +56,6 @@ class Locked(AbstractAsyncLocked[_V, Lock]):
         super().__init__(val, lock=lock if lock else Lock())
 
 
-class Semaphored(AbstractAsyncLocked[_V, Semaphore]):
-    def __init__(self, val: _V, *, semaphore: Optional[Semaphore] = None):
-        super().__init__(val, lock=semaphore if semaphore else Semaphore())
-
-
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
@@ -74,23 +73,8 @@ async def locked(
     return inner
 
 
-async def semaphored(
-    f: Callable[_P, _R], *, semaphore: Optional[Semaphore] = None
-) -> Callable[_P, Awaitable[_R]]:
-    locked_f = Semaphored(f, semaphore=semaphore)
-
-    async def inner(*args: _P.args, **kwargs: _P.kwargs) -> _R:
-        async with locked_f as unlocked_f:
-            res = unlocked_f(*args, **kwargs)
-        return res
-
-    return inner
-
-
 __all__ = [
     AbstractAsyncLocked.__name__,
     Locked.__name__,
-    Semaphored.__name__,
     locked.__name__,
-    semaphored.__name__,
 ]
