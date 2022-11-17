@@ -1,4 +1,3 @@
-# pyLocked
 pylocked provides utility classes (and functions) to lock any resource (or function) and thus make them thread and / or concurrency safe.
 
 ## Install
@@ -19,10 +18,10 @@ pip install git+https://github.com/Eyal-Shalev/pylocked
 
 ### AsyncIO
 
-#### `pylocked.asyncio.Locked`
+#### `pylocked.asyncio.AsyncLocked`
 
 ```python
-from pylocked.asyncio import Locked
+from pylocked.asyncio import AsyncLocked
 
 locked_arr: Locked[list[int]] = Locked([])
 
@@ -38,7 +37,7 @@ async def duplicate():
   await locked_arr.update(lambda arr: arr * 2)
 ```
 
-#### `pylocked.asyncio.locked()`
+#### `pylocked.asyncio.async_locked()`
 
 ```python
 from typing import Optional

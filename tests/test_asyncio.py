@@ -8,7 +8,9 @@ from typing import Any, Awaitable, Callable, Type
 import pytest
 from tests.utils.ref import Ref
 
-from pylocked.asyncio import Locked
+from pylocked.asyncio import AsyncLocked
+
+# TODO: add test for async_locked
 
 
 @pytest.mark.asyncio
@@ -16,11 +18,11 @@ from pylocked.asyncio import Locked
 @pytest.mark.parametrize(
     "lock_cls",
     [
-        Locked,
-        partial(Locked, lock=Lock()),
+        AsyncLocked,
+        partial(AsyncLocked, lock=Lock()),
     ],
 )
-async def test_with_lock(size: int, lock_cls: Type[Locked[Ref[int]]]) -> None:
+async def test_with_lock(size: int, lock_cls: Type[AsyncLocked[Ref[int]]]) -> None:
     locked_counter = lock_cls(Ref(0))
 
     async def inc() -> None:
@@ -47,14 +49,14 @@ def do_inc(val: int) -> int:
 @pytest.mark.parametrize(
     "lock_cls",
     [
-        Locked,
-        partial(Locked, lock=Lock()),
+        AsyncLocked,
+        partial(AsyncLocked, lock=Lock()),
     ],
 )
 async def test_update(
     size: int,
     fn: Callable[[int], Awaitable[int] | int],
-    lock_cls: Type[Locked[int]],
+    lock_cls: Type[AsyncLocked[int]],
 ) -> None:
     locked_counter = lock_cls(0)
 
@@ -69,11 +71,11 @@ async def test_update(
 @pytest.mark.parametrize(
     "lock_cls",
     [
-        Locked,
-        partial(Locked, lock=Lock()),
+        AsyncLocked,
+        partial(AsyncLocked, lock=Lock()),
     ],
 )
-async def test_replace(lock_cls: Type[Locked[int]]) -> None:
+async def test_replace(lock_cls: Type[AsyncLocked[int]]) -> None:
     locked_counter = lock_cls(0)
     await locked_counter.__aenter__()
 

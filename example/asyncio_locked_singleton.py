@@ -4,13 +4,13 @@ import random
 from asyncio import sleep
 from typing import Optional
 
-from pylocked.asyncio import locked
+from pylocked.asyncio import async_locked
 
 
 class LockedSingleton:
     _instance: Optional[LockedSingleton] = None
 
-    @locked
+    @async_locked
     @staticmethod
     async def get_instance() -> LockedSingleton:
         if LockedSingleton._instance is None:
