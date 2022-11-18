@@ -11,9 +11,10 @@ readme = "README.md"
 license = {file = "LICENSE.txt"}
 
 [project.urls]
-homepage = "https://github.com/Eyal-Shalev/pylocked"
-documentation = "https://github.com/Eyal-Shalev/pylocked"
+homepage = "https://Eyal-Shalev.github.io/pylocked"
+documentation = "https://Eyal-Shalev.github.io/pylocked"
 repository = "https://github.com/Eyal-Shalev/pylocked"
+issues = "https://github.com/Eyal-Shalev/pylocked/issues"
 
 [project.optional-dependencies]
 publish = ['twine~=4.0']
