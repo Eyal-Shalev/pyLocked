@@ -8,11 +8,17 @@ dynamic = ['version']
 authors = [{ name = "Eyal Halpern Shalev", email = "eyalsh@gmail.com" }]
 requires-python = ">=3.10"
 readme = "README.md"
+license = {file = "LICENSE.txt"}
+
+[project.urls]
+homepage = "https://github.com/Eyal-Shalev/pylocked"
+documentation = "https://github.com/Eyal-Shalev/pylocked"
+repository = "https://github.com/Eyal-Shalev/pylocked"
 
 [project.optional-dependencies]
 publish = ['twine~=4.0']
 build = ['build~=0.9', 'semver~=2.13']
-doc = ['pdoc~=12.3']
+docs = ['pdoc~=12.3']
 test = ['pytest~=7.2', 'pytest-asyncio~=0.20', 'black~=22.10', 'mypy~=0.990', 'isort~=5.10']
 dev = ['pylocked[test,build,publish,doc]', 'ipython~=8.6']
 
