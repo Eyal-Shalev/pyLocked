@@ -20,7 +20,7 @@ issues = "https://github.com/Eyal-Shalev/pylocked/issues"
 publish = ['twine~=4.0']
 build = ['build~=0.9', 'semver~=2.13']
 docs = ['pdoc~=12.3']
-test = ['pytest~=7.2', 'pytest-asyncio~=0.20', 'black~=22.10', 'mypy~=0.990', 'isort~=5.10']
+test = ['pytest~=7.2', 'pytest-asyncio~=0.20', 'black~=22.10', 'mypy>=0.990,<2.0', 'isort~=5.10']
 dev = ['pylocked[test,build,publish,doc]', 'ipython~=8.6']
 
 [tool.setuptools.dynamic]
